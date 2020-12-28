@@ -16,11 +16,13 @@ class BounceBolls:  # 创建窗口对象
     def __init__(self):
         self.bollList = []
 
-        windows = Tk()
-        windows.title("BounceBalls game")
+        self.windows = Tk()
+        self.windows.resizable(width=False,height=False)
+        self.windows.title("BounceBalls game")
+        self.windows.protocol("WM_DELETE_WINDOW",self.on_Closeing)
         self.width = 600
         self.height = 400
-        self.canvas = Canvas(windows, bg="white", width=self.width, height=self.height)
+        self.canvas = Canvas(self.windows, bg="white", width=self.width, height=self.height)
         self.canvas.pack()
 
         self.frame = Frame()
@@ -32,14 +34,13 @@ class BounceBolls:  # 创建窗口对象
         btResume.pack(side=LEFT)
         btAdd = Button(self.frame, text="+", command=self.add)
         btAdd.pack(side=LEFT)
-        btRemove = Button(self.frame, text="_", command=self.remove)
+        btRemove = Button(self.frame, text="-", command=self.remove)
         btRemove.pack(side=LEFT)
 
-        self.sleepTime = 10
+        self.sleepTime = 100
         self.isStopped = False
         self.animate()
-
-        windows.mainloop()
+        self.windows.mainloop()
 
     def stop(self):
         self.isStopped = True
@@ -54,8 +55,12 @@ class BounceBolls:  # 创建窗口对象
     def remove(self):
         self.bollList.pop()
 
+    def on_Closeing(self):
+        self.stop()
+        self.windows.after(self.sleepTime+10,self.windows.destroy)
+
     def animate(self):
-        while not self.isStopped:
+        while not self.isStopped :
             self.canvas.after(self.sleepTime)
             self.canvas.update()
             self.canvas.delete("ball")
